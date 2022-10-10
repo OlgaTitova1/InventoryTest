@@ -1,0 +1,6 @@
+bin
+obj
+/Inventory.DAL/bin
+/Inventory.DAL/obj
+/InventoryTest/obj
+/InventoryTest/bin

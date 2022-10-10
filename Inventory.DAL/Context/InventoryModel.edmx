@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="InventoriesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Deliveries">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierId" Type="bigint" Nullable="false" />
+          <Property Name="DeliveryDate" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductCategories">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="TypeId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductDeliveries">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="DeliveryId" Type="bigint" Nullable="false" />
+          <Property Name="Weight" Type="smallint" Nullable="false" />
+          <Property Name="Cost" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CategoryId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductSuppliersInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="SupplierId" Type="bigint" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="PeriodFrom" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="PeriodTo" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Suppliers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Telephone" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_ProductCategories_TypeId">
+          <End Role="ProductTypes" Type="Self.ProductTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductCategories" Type="Self.ProductCategories" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductCategories">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductDeliveries_DeliveryId">
+          <End Role="Deliveries" Type="Self.Deliveries" Multiplicity="1" />
+          <End Role="ProductDeliveries" Type="Self.ProductDeliveries" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deliveries">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductDeliveries">
+              <PropertyRef Name="DeliveryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductDeliveries_ProductId">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="ProductDeliveries" Type="Self.ProductDeliveries" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductDeliveries">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Products_ProductCategories">
+          <End Role="ProductCategories" Type="Self.ProductCategories" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSuppliersInfo_ProductId">
+          <End Role="Products" Type="Self.Products" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductSuppliersInfo" Type="Self.ProductSuppliersInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSuppliersInfo">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSuppliersInfo_SupplierId">
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductSuppliersInfo" Type="Self.ProductSuppliersInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSuppliersInfo">
+              <PropertyRef Name="SupplierId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InventoriesModelStoreContainer">
+          <EntitySet Name="Deliveries" EntityType="Self.Deliveries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductCategories" EntityType="Self.ProductCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductDeliveries" EntityType="Self.ProductDeliveries" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductSuppliersInfo" EntityType="Self.ProductSuppliersInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductTypes" EntityType="Self.ProductTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ProductCategories_TypeId" Association="Self.FK_ProductCategories_TypeId">
+            <End Role="ProductTypes" EntitySet="ProductTypes" />
+            <End Role="ProductCategories" EntitySet="ProductCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductDeliveries_DeliveryId" Association="Self.FK_ProductDeliveries_DeliveryId">
+            <End Role="Deliveries" EntitySet="Deliveries" />
+            <End Role="ProductDeliveries" EntitySet="ProductDeliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductDeliveries_ProductId" Association="Self.FK_ProductDeliveries_ProductId">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductDeliveries" EntitySet="ProductDeliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Products_ProductCategories" Association="Self.FK_Products_ProductCategories">
+            <End Role="ProductCategories" EntitySet="ProductCategories" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSuppliersInfo_ProductId" Association="Self.FK_ProductSuppliersInfo_ProductId">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductSuppliersInfo" EntitySet="ProductSuppliersInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSuppliersInfo_SupplierId" Association="Self.FK_ProductSuppliersInfo_SupplierId">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="ProductSuppliersInfo" EntitySet="ProductSuppliersInfo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InventoriesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Delivery">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierId" Type="Int64" Nullable="false" />
+          <Property Name="DeliveryDate" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="ProductDeliveries" Relationship="Self.FK_ProductDeliveries_DeliveryId" FromRole="Deliveries" ToRole="ProductDeliveries" />
+        </EntityType>
+        <EntityType Name="ProductCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TypeId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ProductTypes" Relationship="Self.FK_ProductCategories_TypeId" FromRole="ProductCategories" ToRole="ProductTypes" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_Products_ProductCategories" FromRole="ProductCategories" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="ProductDelivery">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="DeliveryId" Type="Int64" Nullable="false" />
+          <Property Name="Weight" Type="Int16" Nullable="false" />
+          <Property Name="Cost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Deliveries" Relationship="Self.FK_ProductDeliveries_DeliveryId" FromRole="ProductDeliveries" ToRole="Deliveries" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_ProductDeliveries_ProductId" FromRole="ProductDeliveries" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_Products_ProductCategories" FromRole="Products" ToRole="ProductCategories" />
+          <NavigationProperty Name="ProductDeliveries" Relationship="Self.FK_ProductDeliveries_ProductId" FromRole="Products" ToRole="ProductDeliveries" />
+          <NavigationProperty Name="ProductSuppliersInfo" Relationship="Self.FK_ProductSuppliersInfo_ProductId" FromRole="Products" ToRole="ProductSuppliersInfo" />
+        </EntityType>
+        <EntityType Name="ProductSupplierInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="SupplierId" Type="Int64" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="PeriodFrom" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="PeriodTo" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_ProductSuppliersInfo_ProductId" FromRole="ProductSuppliersInfo" ToRole="Products" />
+          <NavigationProperty Name="Suppliers" Relationship="Self.FK_ProductSuppliersInfo_SupplierId" FromRole="ProductSuppliersInfo" ToRole="Suppliers" />
+        </EntityType>
+        <EntityType Name="ProductType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ProductCategory" Relationship="Self.FK_ProductCategories_TypeId" FromRole="ProductTypes" ToRole="ProductCategories" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Supplier">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Telephone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProductSuppliersInfo" Relationship="Self.FK_ProductSuppliersInfo_SupplierId" FromRole="Suppliers" ToRole="ProductSuppliersInfo" />
+        </EntityType>
+        <Association Name="FK_ProductDeliveries_DeliveryId">
+          <End Role="Deliveries" Type="InventoriesModel.Delivery" Multiplicity="1" />
+          <End Role="ProductDeliveries" Type="InventoriesModel.ProductDelivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Deliveries">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductDeliveries">
+              <PropertyRef Name="DeliveryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductCategories_TypeId">
+          <End Role="ProductTypes" Type="InventoriesModel.ProductType" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductCategories" Type="InventoriesModel.ProductCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductCategories">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Products_ProductCategories">
+          <End Role="ProductCategories" Type="InventoriesModel.ProductCategory" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Products" Type="InventoriesModel.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductCategories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductDeliveries_ProductId">
+          <End Role="Products" Type="InventoriesModel.Product" Multiplicity="1" />
+          <End Role="ProductDeliveries" Type="InventoriesModel.ProductDelivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductDeliveries">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSuppliersInfo_ProductId">
+          <End Role="Products" Type="InventoriesModel.Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductSuppliersInfo" Type="InventoriesModel.ProductSupplierInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSuppliersInfo">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductSuppliersInfo_SupplierId">
+          <End Role="Suppliers" Type="InventoriesModel.Supplier" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductSuppliersInfo" Type="InventoriesModel.ProductSupplierInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductSuppliersInfo">
+              <PropertyRef Name="SupplierId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InventoriesEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Deliveries" EntityType="InventoriesModel.Delivery" />
+          <EntitySet Name="ProductCategories" EntityType="InventoriesModel.ProductCategory" />
+          <EntitySet Name="ProductDeliveries" EntityType="InventoriesModel.ProductDelivery" />
+          <EntitySet Name="Products" EntityType="InventoriesModel.Product" />
+          <EntitySet Name="ProductSuppliersInfo" EntityType="InventoriesModel.ProductSupplierInfo" />
+          <EntitySet Name="ProductTypes" EntityType="InventoriesModel.ProductType" />
+          <EntitySet Name="Suppliers" EntityType="InventoriesModel.Supplier" />
+          <AssociationSet Name="FK_ProductDeliveries_DeliveryId" Association="Self.FK_ProductDeliveries_DeliveryId">
+            <End Role="Deliveries" EntitySet="Deliveries" />
+            <End Role="ProductDeliveries" EntitySet="ProductDeliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductCategories_TypeId" Association="Self.FK_ProductCategories_TypeId">
+            <End Role="ProductTypes" EntitySet="ProductTypes" />
+            <End Role="ProductCategories" EntitySet="ProductCategories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Products_ProductCategories" Association="Self.FK_Products_ProductCategories">
+            <End Role="ProductCategories" EntitySet="ProductCategories" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductDeliveries_ProductId" Association="Self.FK_ProductDeliveries_ProductId">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductDeliveries" EntitySet="ProductDeliveries" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSuppliersInfo_ProductId" Association="Self.FK_ProductSuppliersInfo_ProductId">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="ProductSuppliersInfo" EntitySet="ProductSuppliersInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSuppliersInfo_SupplierId" Association="Self.FK_ProductSuppliersInfo_SupplierId">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="ProductSuppliersInfo" EntitySet="ProductSuppliersInfo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="InventoriesModelStoreContainer" CdmEntityContainer="InventoriesEntities">
+          <EntitySetMapping Name="Deliveries">
+            <EntityTypeMapping TypeName="InventoriesModel.Delivery">
+              <MappingFragment StoreEntitySet="Deliveries">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductCategories">
+            <EntityTypeMapping TypeName="InventoriesModel.ProductCategory">
+              <MappingFragment StoreEntitySet="ProductCategories">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductDeliveries">
+            <EntityTypeMapping TypeName="InventoriesModel.ProductDelivery">
+              <MappingFragment StoreEntitySet="ProductDeliveries">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="DeliveryId" ColumnName="DeliveryId" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="InventoriesModel.Product">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductSuppliersInfo">
+            <EntityTypeMapping TypeName="InventoriesModel.ProductSupplierInfo">
+              <MappingFragment StoreEntitySet="ProductSuppliersInfo">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="PeriodFrom" ColumnName="PeriodFrom" />
+                <ScalarProperty Name="PeriodTo" ColumnName="PeriodTo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductTypes">
+            <EntityTypeMapping TypeName="InventoriesModel.ProductType">
+              <MappingFragment StoreEntitySet="ProductTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Suppliers">
+            <EntityTypeMapping TypeName="InventoriesModel.Supplier">
+              <MappingFragment StoreEntitySet="Suppliers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
